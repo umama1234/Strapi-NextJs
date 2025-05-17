@@ -20,7 +20,6 @@ const DetailCard = ({
   price,
   stock,
   publisher,
-  publicationDate,
 }) => {
   return (
     <Card className="w-full max-w-4xl p-4 font-sans">
@@ -47,7 +46,6 @@ const DetailCard = ({
             <CardDescription>Stock: {stock}</CardDescription>
             <CardDescription>Language: {language}</CardDescription>
             <CardDescription>Publisher: {publisher}</CardDescription>
-            <CardDescription>Issuing Date: {publicationDate}</CardDescription>
           </div>
         </div>
       </CardContent>
