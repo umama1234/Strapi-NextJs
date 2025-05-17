@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import MyCard from "@/components/MyCard";
 import CategoryPopover from "@/components/CategoryPopover";
 import { useSearchParams } from "next/navigation";
 
-export default function Home() {
+function HomeContent() {
   const [books, setBooks] = useState([]);
   const searchParams = useSearchParams();
 
@@ -28,22 +28,28 @@ export default function Home() {
     <>
       <div className="flex flex-row items-center justify-between mt-8 mx-20">
         <h1 className="text-left mt-8 mx-1 text-3xl font-bold">Featured Books</h1>
-        <CategoryPopover /> 
+        <CategoryPopover />
       </div>
 
       <div className="flex flex-wrap justify-center gap-8 mt-8">
-        {books.map((book) => {
-          return (
-            <MyCard
-              key={book.id}
-              title={book.title}
-              author={book.author}
-              image={'http://localhost:1337' + book.coverImage.url}
-              slug={book.slug}
-            />
-          );
-        })}
+        {books.map((book) => (
+          <MyCard
+            key={book.id}
+            title={book.title}
+            author={book.author}
+            image={"http://localhost:1337" + book.coverImage.url}
+            slug={book.slug}
+          />
+        ))}
       </div>
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading books...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
