@@ -1,62 +1,144 @@
-import React from "react";
+'use client';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import SimpleCard from './simplecard';
+
+const DetailCard = ({ product }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [relatedProduct, setRelatedProduct] = useState([]);
+
+  const imageUrl = product?.Image?.url
+    ? `http://localhost:1337${product.Image.url}`
+    : '/placeholder.jpg';
+
+  const handleIncrement = () => {
+    if (quantity < product?.Stock) {
+      setQuantity(prev => prev + 1);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!product?.category?.name) return;
+
+      try {
+        const response = await fetch(
+          `http://localhost:1337/api/products?filters[category][name][$eq]=${product.category.name}&populate=*`
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch product');
+        }
+        const data = await response.json();
+
+        // Filter out the current product
+        const filteredProducts = data.data.filter(
+          (item) => item.id !== product.id
+        );
+
+        setRelatedProduct(filteredProducts);
+      } catch (error) {
+        console.error('Error fetching related products:', error);
+      }
+    };
+
+    fetchProduct();
+  }, [product]);
 
 
 
-import {
-  Card,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 
+  
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
-
-const DetailCard = ({
-  title,
-  author,
-  image,
-  category,
-  language,
-  price,
-  stock,
-  publisher,
-}) => {
   return (
-    <Card className="w-full max-w-4xl p-4 font-sans">
-      <CardContent className="flex gap-6">
-        {/* Left: Optimized Image */}
-        {image && (
-          <div className="w-1/3">
-            <img
-              src={image}
-              alt={title}
-              loading="lazy"
-              className="w-full h-full object-cover rounded-md"
+    <>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Left Column - Image */}
+          <div className="relative h-[500px] rounded-lg overflow-hidden">
+            <Image
+              src={imageUrl}
+              alt={product?.Title || 'Product Image'}
+              fill
+              className="object-cover"
+              priority
             />
           </div>
-        )}
 
-        {/* Right: Details */}
-        <div className="w-2/3 flex flex-col justify-between">
-          <div className="space-y-1 text-gray-800">
-            <CardTitle className="text-2xl font-semibold">Title: {title}</CardTitle>
-            <CardDescription>Author: {author}</CardDescription>
-            <CardDescription>Category: {category}</CardDescription>
-            <CardDescription>Price: {price}</CardDescription>
-            <CardDescription>Stock: {stock}</CardDescription>
-            <CardDescription>Language: {language}</CardDescription>
-            <CardDescription>Publisher: {publisher}</CardDescription>
+          {/* Right Column - Details */}
+          <div className="flex flex-col">
+            <div className="mb-4">
+              <span className="text-green-500 font-semibold">
+                {product?.Stock > 0 ? `${product.Stock} in stock` : 'Out of stock'}
+              </span>
+            </div>
+
+            <h1 className="text-3xl font-bold mb-4">{product.Title}</h1>
+
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Product Details:</h2>
+              <p className="text-gray-600">{product.Description}</p>
+            </div>
+
+            <div className="mb-4">
+              <span className="text-2xl font-bold text-[#bada55]">
+                Rs {product.Price}
+              </span>
+            </div>
+
+            {product?.category && (
+              <div className="mb-6">
+                <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">
+                  {product.category.name}
+                </span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center border rounded-lg">
+                <button
+                  onClick={handleDecrement}
+                  className="px-4 py-2 text-gray-600 hover:text-[#bada55] disabled:text-gray-300"
+                  disabled={quantity <= 1}
+                >
+                  -
+                </button>
+                <span className="px-4 py-2 border-x">{quantity}</span>
+                <button
+                  onClick={handleIncrement}
+                  className="px-4 py-2 text-gray-600 hover:text-[#bada55] disabled:text-gray-300"
+                  disabled={quantity >= product?.Stock}
+                >
+                  +
+                </button>
+              </div>
+              <button
+                className="bg-[#bada55] hover:bg-[#a2c149] text-white px-8 py-3 rounded-lg transition-all duration-200"
+                disabled={!product?.Stock}
+              >
+                Add To Cart
+              </button>
+            </div>
           </div>
         </div>
-      </CardContent>
-
-      {/* Bottom: Add to Cart Button */}
-      <div className="px-6 pb-4 pt-2">
-        <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-base font-medium">
-          Add to Cart
-        </button>
       </div>
-    </Card>
+
+      <h1 className="text-3xl font-bold mb-8 text-center">Related Products</h1>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {relatedProduct.map((relatedproduct) => (
+          <SimpleCard key={relatedproduct.id} relatedproduct={relatedproduct} />
+        ))}
+      </div>
+    </>
   );
 };
 
