@@ -6,7 +6,7 @@ const SimpleCard = ({ relatedproduct }) => {
 
   
   const imageUrl = relatedproduct?.Image?.url 
-    ? `http://localhost:1337${relatedproduct.Image.url}`
+    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${relatedproduct.Image.url}`
     : '/placeholder.jpg';
 
   return (
@@ -35,5 +35,6 @@ const SimpleCard = ({ relatedproduct }) => {
     </div>
   );
 };
+
 
 export default SimpleCard;

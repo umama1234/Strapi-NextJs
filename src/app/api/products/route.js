@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request) {
   try {
-    const response = await fetch('http://localhost:1337/api/products?populate=*&filters[IsFeatured][$eq]=false', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products?populate=*&filters[IsFeatured][$eq]=false`, {
       headers: {
         'Content-Type': 'application/json',
       },

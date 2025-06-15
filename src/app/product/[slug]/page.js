@@ -14,7 +14,7 @@ export default function DetailPage({ params }) {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://localhost:1337/api/products?filters[slug][$eq]=${slug}&populate=*`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products?filters[slug][$eq]=${slug}&populate=*`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch product');
                 }

@@ -11,11 +11,12 @@ const ProductCard = ({ product }) => {
   const router = useRouter();
   
   const imageUrl = product.Image?.url 
-    ? `http://localhost:1337${product.Image.url}`
+    ? `${product.Image.url}`
     : product.Image?.formats?.thumbnail?.url 
-      ? `http://localhost:1337${product.Image.formats.thumbnail.url}`
+      ? `${product.Image.formats.thumbnail.url}`
       : '/placeholder.jpg';
 
+console.log(imageUrl, "imageUrl");
 
 
 

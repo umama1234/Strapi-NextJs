@@ -8,7 +8,7 @@ const DetailCard = ({ product }) => {
   const [relatedProduct, setRelatedProduct] = useState([]);
 
   const imageUrl = product?.Image?.url
-    ? `http://localhost:1337${product.Image.url}`
+    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${product.Image.url}`
     : '/placeholder.jpg';
 
   const handleIncrement = () => {
@@ -29,7 +29,7 @@ const DetailCard = ({ product }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:1337/api/products?filters[category][name][$eq]=${product.category.name}&populate=*`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products?filters[category][name][$eq]=${product.category.name}&populate=*`
         );
         if (!response.ok) {
           throw new Error('Failed to fetch product');
