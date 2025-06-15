@@ -6,7 +6,7 @@ const SimpleCard = ({ relatedproduct }) => {
 
   
   const imageUrl = relatedproduct?.Image?.url 
-    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${relatedproduct.Image.url}`
+    ? `${relatedproduct.Image.url}`
     : '/placeholder.jpg';
 
   return (

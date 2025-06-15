@@ -8,7 +8,7 @@ const DetailCard = ({ product }) => {
   const [relatedProduct, setRelatedProduct] = useState([]);
 
   const imageUrl = product?.Image?.url
-    ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${product.Image.url}`
+    ? `${product.Image.url}`
     : '/placeholder.jpg';
 
   const handleIncrement = () => {
