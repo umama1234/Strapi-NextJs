@@ -48,10 +48,9 @@ function ProductListContent() {
         setFeatured(featuredData.data || []);
         setCategories(categoriesData.data || []);
 
-        // ✅ Corrected category filtering
         if (categoryParam) {
-          const filtered = allProducts.filter(product =>
-            product?.attributes?.category?.data?.attributes?.slug === categoryParam
+          const filtered = allProducts.filter(product => 
+            product.attributes.category.data.attributes.slug === categoryParam
           );
           setFilteredProducts(filtered);
         } else {
@@ -75,6 +74,8 @@ function ProductListContent() {
       </div>
     );
   }
+  console.log(categories)
+  console.log(products)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -93,11 +94,11 @@ function ProductListContent() {
             <button
               key={category.id}
               className={`px-6 py-2 rounded-full ${
-                categoryParam === category.attributes?.slug ? 'bg-[#bada55] text-white' : 'bg-gray-100'
+                categoryParam === category.slug ? 'bg-[#bada55] text-white' : 'bg-gray-100'
               } hover:bg-[#bada55] hover:text-white transition-colors duration-200`}
-              onClick={() => handleCategoryClick(category.attributes?.slug)}
+              onClick={() => handleCategoryClick(category.slug)}
             >
-              {category.attributes?.name}
+              {category.name}
             </button>
           ))}
         </div>
@@ -119,9 +120,9 @@ function ProductListContent() {
       <h1 className="text-3xl font-bold mb-8 text-center">
         {categoryParam 
           ? `${categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)} Products`
-          : 'All Products'}
+          : 'All Products'
+        }
       </h1>
-
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (

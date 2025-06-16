@@ -84,7 +84,7 @@ const DetailCard = ({ product }) => {
             <h1 className="text-3xl font-bold mb-4">{product.Title}</h1>
 
             <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Specification:</h2>
+              <h2 className="text-xl font-semibold mb-2">Product Details:</h2>
               <p className="text-gray-600">{product.Description}</p>
             </div>
 
