@@ -97,7 +97,7 @@ function ProductListContent() {
               } hover:bg-[#bada55] hover:text-white transition-colors duration-200`}
               onClick={() => handleCategoryClick(category.attributes?.slug)}
             >
-              {category.name}
+              {category.attributes?.name}
             </button>
           ))}
         </div>
