@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useRef, useState, Suspense } from 'react';
 import ProductCard from '../components/ProductCard';
 import HeroSection from '../components/Herosection';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -15,6 +15,7 @@ function ProductListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const productSectionRef = useRef(null); // Ref to scroll to product section
 
   const handleCategoryClick = (categorySlug) => {
     if (categorySlug) {
@@ -22,6 +23,11 @@ function ProductListContent() {
     } else {
       router.push('/');
     }
+
+    // Scroll to product section after routing
+    setTimeout(() => {
+      productSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100); // delay to ensure route state update
   };
 
   useEffect(() => {
@@ -50,7 +56,7 @@ function ProductListContent() {
 
         if (categoryParam) {
           const filtered = allProducts.filter(product => 
-            product.attributes.category.data.attributes.slug === categoryParam
+            product.category.slug === categoryParam
           );
           setFilteredProducts(filtered);
         } else {
@@ -74,8 +80,9 @@ function ProductListContent() {
       </div>
     );
   }
-  console.log(categories)
-  console.log(products)
+
+  console.log(categories);
+  console.log(products);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -94,7 +101,7 @@ function ProductListContent() {
             <button
               key={category.id}
               className={`px-6 py-2 rounded-full ${
-                categoryParam === category.slug ? 'bg-[#bada55] text-white' : 'bg-gray-100'
+                categoryParam === category.attributes?.slug ? 'bg-[#bada55] text-white' : 'bg-gray-100'
               } hover:bg-[#bada55] hover:text-white transition-colors duration-200`}
               onClick={() => handleCategoryClick(category.slug)}
             >
@@ -117,22 +124,24 @@ function ProductListContent() {
         </>
       )}
 
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        {categoryParam 
-          ? `${categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)} Products`
-          : 'All Products'
-        }
-      </h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-8 text-gray-500">
-            No products found in this category.
-          </div>
-        )}
+      <div ref={productSectionRef}>
+        <h1 className="text-3xl font-bold mb-8 text-center">
+          {categoryParam 
+            ? `${categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)} Products`
+            : 'All Products'
+          }
+        </h1>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No products found in this category.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -5,20 +5,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const ProductCard = ({ product }) => {
-
-
   const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
-  
-  const imageUrl = product.Image?.url 
+
+  const imageUrl = product.Image?.url
     ? `${product.Image.url}`
-    : product.Image?.formats?.thumbnail?.url 
-      ? `${product.Image.formats.thumbnail.url}`
-      : '/placeholder.jpg';
-
-console.log(imageUrl, "imageUrl");
-
-
+    : product.Image?.formats?.thumbnail?.url
+    ? `${product.Image.formats.thumbnail.url}`
+    : '/placeholder.jpg';
 
   const handleViewDetails = (slug) => {
     if (slug) {
@@ -28,60 +22,54 @@ console.log(imageUrl, "imageUrl");
     }
   };
 
-
-
-
-
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-visible hover:shadow-xl transition-shadow duration-300 relative pb-14">
-      <div className="relative">
-        {/* Heart Icon */}
-        <button 
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 relative group">
+      {/* Image Section */}
+      <div className="relative h-64 w-full overflow-hidden rounded-t-xl">
+        <Image
+          src={imageUrl}
+          alt={product.Title || 'Product Image'}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority
+        />
+
+        {/* Heart Icon - show on hover at lower right */}
+        <button
           onClick={() => setIsLiked(!isLiked)}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white transition-colors duration-200"
+          className="absolute bottom-3 right-3 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
-          <HeartIcon 
-            className={`w-6 h-6 transition-colors duration-200 ${
+          <HeartIcon
+            className={`w-6 h-6 ${
               isLiked ? 'text-red-500 fill-red-500' : 'text-gray-600'
-            }`}
+            } transition-colors duration-200`}
           />
         </button>
-
-        <div className="relative h-64 w-full">
-          <Image
-            src={imageUrl}
-            alt={product.Title || 'Product Image'}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority
-          />
-        </div>
       </div>
-      
-      <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-2 line-clamp-1 text-gray-800">
+
+      {/* Text Section */}
+      <div className="p-4">
+        <h2 className="text-xl font-semibold mb-1 line-clamp-1 text-gray-800">
           {product.Title}
         </h2>
-        <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
+        <p className="text-gray-600 mb-3 line-clamp-2 text-sm">
           {product.Description}
         </p>
-        
-        <div className="flex justify-center mb-8">
-          <span className="text-2xl font-bold text-[#bada55]">
+
+        {/* Price + View Details Side-by-Side */}
+        <div className="flex justify-between items-center">
+          <span className="text-lg font-bold text-[#bada55]">
             Rs {product.Price}
           </span>
-        </div>
-      </div>
 
-      {/* Half-hanging Button with more spacing */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-        <button 
-          onClick={ ()=> handleViewDetails(product.slug)   }
-          className="bg-[#bada55] hover:bg-[#a2c149] text-white px-8 py-3 rounded-full shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
-        >
-          View Details
-        </button>
+          <button
+            onClick={() => handleViewDetails(product.slug)}
+            className="px-4 py-1 bg-[#bada55] text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#a2c149] text-sm"
+          >
+            View Details
+          </button>
+        </div>
       </div>
     </div>
   );
