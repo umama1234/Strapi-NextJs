@@ -50,7 +50,7 @@ function ProductListContent() {
 
         if (categoryParam) {
           const filtered = allProducts.filter(product => 
-            product.attributes.category.data.attributes.slug === categoryParam
+            product.category.slug === categoryParam
           );
           setFilteredProducts(filtered);
         } else {
